@@ -6,6 +6,8 @@ module Vault
       @keys ||= [
         :address,
         :token,
+        :connection_open_timeout,
+        :connection_read_timeout,
         :proxy_address,
         :proxy_password,
         :proxy_port,
@@ -14,6 +16,7 @@ module Vault
         :ssl_ca_cert,
         :ssl_ca_path,
         :ssl_verify,
+        :ssl_timeout,
       ]
     end
 

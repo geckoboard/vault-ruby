@@ -23,6 +23,29 @@ module Vault
         ENV["VAULT_TOKEN"]
       end
 
+      # Number of seconds to wait for the connection to open.
+      # Any number may be used, including Floats for fractional seconds.
+      # @return [Float]
+      def connection_open_timeout
+        if ENV['VAULT_CONNECTION_OPEN_TIMEOUT'].nil?
+          3.0
+        else
+          ENV['VAULT_CONNECTION_OPEN_TIMEOUT'].to_f
+        end
+      end
+
+      # Number of seconds to wait for a single block to be read.
+      # Note that this is a per-block timeout, and the timeout is reset each time a block is read.
+      # Any number may be used, including Floats for fractional seconds.
+      # @return [Float]
+      def connection_read_timeout
+        if ENV['VAULT_CONNECTION_READ_TIMEOUT'].nil?
+          5.0
+        else
+          ENV['VAULT_CONNECTION_READ_TIMEOUT'].to_f
+        end
+      end
+
       # The HTTP Proxy server address as a string
       # @return [String, nil]
       def proxy_address
@@ -58,7 +81,7 @@ module Vault
       def ssl_ca_cert
         ENV["VAULT_CACERT"]
       end
-      #
+
       # The path to the directory on disk holding CA certs to use
       # for certificate verification
       # @return [String, nil]
@@ -74,6 +97,17 @@ module Vault
           true
         else
           %w[t y].include?(ENV["VAULT_SSL_VERIFY"].downcase[0])
+        end
+      end
+
+      # Number of seconds to wait for the initial SSL handshake to complete.
+      # Any number may be used, including Floats for fractional seconds.
+      # @return [Float, nil]
+      def ssl_timeout
+        if ENV["VAULT_SSL_TIMEOUT"].nil?
+          nil
+        else
+          ENV["VAULT_SSL_TIMEOUT"].to_f
         end
       end
     end

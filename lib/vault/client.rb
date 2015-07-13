@@ -173,10 +173,16 @@ module Vault
         unless ssl_verify
           connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
         end
+
+        # Set the timeout for SSL handshake
+        connection.ssl_timeout = ssl_timeout if ssl_timeout
       end
 
       # Add the cookie to the request.
       request["Cookie"] = cookie.to_s
+
+      connection.open_timeout = connection_open_timeout if connection_open_timeout
+      connection.read_timeout = connection_read_timeout if connection_read_timeout
 
       # Create a connection using the block form, which will ensure the socket
       # is properly closed in the event of an error.
@@ -193,7 +199,7 @@ module Vault
           error(response)
         end
       end
-    rescue SocketError, Errno::ECONNREFUSED, EOFError
+    rescue SocketError, Errno::ECONNREFUSED, EOFError, Net::ReadTimeout, Net::OpenTimeout
       raise HTTPConnectionError.new(address)
     end
 
